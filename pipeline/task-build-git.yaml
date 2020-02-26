@@ -1,0 +1,109 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-git
+spec:
+  inputs:
+    params:
+      - name: BUILDER_IMAGE
+        description: The location of the buildah builder image.
+        default: quay.io/buildah/stable:v1.11.0
+      - name: DOCKERFILE
+        description: Path to the Dockerfile to build.
+        default: ./Dockerfile
+      - name: CONTEXT
+        description: Path to the directory to use as context.
+        default: .
+      - name: TLSVERIFY
+        description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
+        default: "false"
+      - name: GIT_REPOSITORY
+        description: Git repository containing manifest files to update
+      - name: GIT_EMAIL
+        default: pipeline@example.com
+      - name: GIT_NAME
+        default: Pipeline Operator
+      - name: GIT_MANIFEST_DIR
+        default: yamls/ocp
+      - name: TOOL_IMAGE
+        default: docker.io/csantanapr/helm-kubectl-curl-git-jq-yq
+    resources:
+      - name: source
+        type: git
+      - name: image
+        type: image
+  steps:
+    - name: build
+      image: $(inputs.params.BUILDER_IMAGE)
+      workingDir: /workspace/source
+      command: ["/bin/bash"]
+      args:
+        - -c
+        - |
+          set -e
+          SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
+          NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
+          NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
+          echo "SHORT_GIT_HASH = $SHORT_GIT_HASH"
+          echo "Building Image $NEW_IMAGE_ID"
+          buildah bud --tls-verify="$(inputs.params.TLSVERIFY)" --layers -f "$(inputs.params.DOCKERFILE)" -t "$NEW_IMAGE_ID" "$(inputs.params.CONTEXT)"
+          echo "Pushing Image $NEW_IMAGE_ID"
+          buildah push --tls-verify="$(inputs.params.TLSVERIFY)" "$NEW_IMAGE_ID" "docker://$NEW_IMAGE_ID"
+          echo "NEW_IMAGE_ID=$NEW_IMAGE_ID" >> /workspace/env-config
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+    - name: git-push
+      image: $(inputs.params.TOOL_IMAGE)
+      env:
+        - name: GIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: git-infra-secret
+              key: username
+              optional: true
+        - name: GIT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: git-infra-secret
+              key: token
+              optional: true
+      command: ["/bin/bash"]
+      args:
+        - -c
+        - |
+          set -eu
+          echo Load environment variables from previous steps
+          source /workspace/env-config
+          git config --global user.email "$(inputs.params.GIT_EMAIL)"
+          git config --global user.name "$(inputs.params.GIT_NAME)"
+          git clone --branch master --depth 1 https://${GIT_USERNAME}:${GIT_TOKEN}@$(inputs.params.GIT_REPOSITORY) repo
+          cd "repo/$(inputs.params.GIT_MANIFEST_DIR)"
+          ls -l
+          echo old value:
+          cat deployment.yaml | yq r - 'spec.template.spec.containers[0].image'
+          echo replacing with new value:
+          echo $NEW_IMAGE_ID
+          yq w --inplace deployment.yaml 'spec.template.spec.containers[0].image' "$NEW_IMAGE_ID"
+          echo verifying new value
+          yq r deployment.yaml 'spec.template.spec.containers[0].image'
+          if ! git diff-index --quiet HEAD --; then
+            git status
+            git add .
+            git commit -m "deployment updated by tekton pipeline running on $(hostname)"
+            git push
+          else
+              echo "no changes, git repository is up to date"
+          fi
+  volumes:
+    - name: varlibcontainers
+      emptyDir: {}
+    - name: m2-repository
+      emptyDir: {}

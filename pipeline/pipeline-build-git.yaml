@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-git
+spec:
+  resources:
+    - name: source
+      type: git
+    - name: image
+      type: image
+  params:
+    - name: GIT_REPOSITORY
+      type: string
+      description: Url without https:// for infra git repo
+      default: github.com/csantanapr/tutorial-tekton-argocd-infra
+    - name: GIT_EMAIL
+      type: string
+      description: Email for Git author
+      default: csantana@us.ibm.com
+    - name: GIT_NAME
+      type: string
+      description: Name for Git author
+      default: Carlos Santana
+  tasks:
+    - name: task
+      taskRef:
+        name: build-git
+      resources:
+        inputs:
+          - name: source
+            resource: source
+          - name: image
+            resource: image
+      params:
+        - name: GIT_REPOSITORY
+          value: "$(params.GIT_REPOSITORY)"
+        - name: GIT_EMAIL
+          value: "$(params.GIT_EMAIL)"
+        - name: GIT_NAME
+          value: "$(params.GIT_NAME)"
