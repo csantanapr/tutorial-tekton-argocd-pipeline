@@ -2,9 +2,12 @@
 
 This tutorials shows the concept of seperation of concerns in DevOps.
 The project is setup in 3 repos (not all teams will have write access to all of them)
-1. This git repo for that contains only the pipeline setup https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
-1. The git repo that contains only the application source code https://github.com/csantanapr/tutorial-tekton-argocd-code
-1. The git repo that contains only the infrastructure manifests (yaml) https://github.com/csantanapr/tutorial-tekton-argocd-infra
+- This git repo for that contains only the pipeline setup 
+  - https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
+- The git repo that contains only the application source code
+  - https://github.com/csantanapr/tutorial-tekton-argocd-code
+- The git repo that contains only the infrastructure manifests (yaml) 
+  - https://github.com/csantanapr/tutorial-tekton-argocd-infra
 
 - We will be using Tekton to build the container image, and update the Infra Git repo.
 - We will be using ArgoCD to deploy the application from the infra git repo
