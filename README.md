@@ -12,13 +12,25 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 - We will be using Tekton to build the container image, and update the Infra Git repo.
 - We will be using ArgoCD to deploy the application from the infra git repo
 
+![overview-diagram](./images/tekton-argocd.png)
 
 ## Prereqs
 
 - Install OpenShift Operators 
   - Install OpenShift Pipeline Operator
+    ```bash
+    oc apply -f operators/tekton-operator.yaml
+    ```
   - Install Argocd (HELM) Operator on the `argocd` namespace
-- Install `tkn` CLI
+    ```bash
+    oc apply -f operators/argocd-operator.yaml
+    ```
+    wait 3 minutes
+    ```
+    oc apply -f operators/argocd-cr.yaml
+    ```
+- [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
+- [Install ArgoCD CLI](https://argoproj.github.io/argo-cd/cli_installation/) `argocd`
 
 
 ## Setup target Namespace
@@ -53,6 +65,36 @@ echo "NAMESPACE set to $NAMESPACE"
     ```
     argocd-server-b54756f69-jncc9
     ```
+    ```bash
+    export ARGOCD_PASSWORD=$(oc get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2)
+    ```
+
+- Login into ArgoCD
+```bash
+argocd login --username admin --password $ARGOCD_PASSWORD $ARGOCD_SERVER
+```
+
+- Create the App
+```bash
+export ARGOCD_APP=$(oc project -q)
+export GIT_REPOSITORY_URL="https://github.com/csantanapr/tutorial-tekton-argocd-infra"
+export GIT_MANIFEST_DIR="yamls/ocp"
+```
+```bash
+argocd app create $ARGOCD_APP \
+--project default \
+--repo $GIT_REPOSITORY_URL \
+--path $GIT_MANIFEST_DIR \
+--dest-server https://kubernetes.default.svc \
+--dest-namespace $NAMESPACE \
+--sync-policy automated \
+--self-heal \
+--auto-prune
+```
+
+```
+application 'tekton-argocd2' created
+```
 
 ## Build Image with Tekton
 
@@ -85,11 +127,10 @@ tkn pipeline ls -n $NAMESPACE
 ```
 ```
 NAME        AGE              LAST RUN   STARTED   DURATION   STATUS
-build       17 seconds ago   ---        ---       ---        ---
 build-git   17 seconds ago   ---        ---       ---        ---
 ```
 
-### Run a task
+### Run the build task to test image build only
 
 ```bash
 tkn task start build \
@@ -124,7 +165,6 @@ app    image-registry.openshift-image-registry.svc:5000/tekton-argocd/app   b711
 - Navigate to [Developer Settings](https://github.com/settings/tokens) and generate a new token; name it something like "CI pipeline"
 - Select `public_repo` scope to enable git clone
 - Select `write:repo_hook` scope so the pipeline can create a web hook
-![Pipeline OAuth scopes](images/github-access-token.png)
 - The GitHub UI will never again let you see this token, so be sure to **save the token** in your password manager or somewhere safe that you can access later on
 - Create the secret for the Infra repository, replace `<GIT_USERNAME>` and `<GIT_TOKEN>`, keep the quotes
     ```bash

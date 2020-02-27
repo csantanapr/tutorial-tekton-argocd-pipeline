@@ -13,6 +13,10 @@ spec:
       type: string
       description: Url without https:// for infra git repo
       default: github.com/csantanapr/tutorial-tekton-argocd-infra
+    - name: GIT_MANIFEST_DIR
+      type: string
+      description: directory with manifests
+      default: yamls/ocp
     - name: GIT_EMAIL
       type: string
       description: Email for Git author
