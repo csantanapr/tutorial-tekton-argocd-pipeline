@@ -178,7 +178,7 @@ app    image-registry.openshift-image-registry.svc:5000/tekton-argocd/app   b711
       -n $NAMESPACE
     ```
 
-### Run Pipeline to Build Image and Update Infra Git
+### Run Pipeline to Build Image and Update Infra Git repo
 
 ```bash
 tkn pipeline start build-git \
@@ -190,7 +190,7 @@ tkn pipeline start build-git \
             -n $NAMESPACE
 ```
 
-## Create a Git Hook for Code Git
+## Create a WebHook for the Code Git repo
 
 
 ```bash
