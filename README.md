@@ -2,7 +2,7 @@
 
 This tutorials shows the concept of seperation of concerns in DevOps.
 The project is setup in 3 repos (not all teams will have write access to all of them)
-- This git repo for that contains only the pipeline setup 
+- This git repo only contains the pipeline setup 
   - https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
 - The git repo that contains only the application source code
   - https://github.com/csantanapr/tutorial-tekton-argocd-code
