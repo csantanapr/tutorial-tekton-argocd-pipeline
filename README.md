@@ -185,9 +185,16 @@ tkn pipeline start build-git \
             --showlog \
             -r source=source \
             -r image=image \
-            -p GIT_REPOSITORY="github.com/csantanapr/tutorial-tekton-argocd-infra" \
             -s pipeline \
             -n $NAMESPACE
+```
+
+```bash
+tkn pipeline ls -n $NAMESPACE
+```
+```
+NAME        AGE             LAST RUN              STARTED         DURATION   STATUS
+build-git   2 minutes ago   build-git-run-rdhmj   2 minutes ago   1 minute   Succeeded
 ```
 
 ## Create a WebHook for the Code Git repo
