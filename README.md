@@ -21,11 +21,10 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```bash
     oc apply -f operators/tekton-operator.yaml
     ```
-  - Install Argocd (HELM) Operator on the `argocd` namespace
+  - Install [ArgoCD (HELM) Operator](https://github.com/disposab1e/argocd-operator-helm) on the `argocd` namespace
     ```bash
     oc apply -f operators/argocd-operator.yaml
     ```
-    wait 3 minutes
     ```
     oc apply -f operators/argocd-cr.yaml
     ```
@@ -93,7 +92,7 @@ argocd app create $ARGOCD_APP \
 ```
 
 ```
-application 'tekton-argocd2' created
+application 'tekton-argocd' created
 ```
 
 ## Build Image with Tekton
