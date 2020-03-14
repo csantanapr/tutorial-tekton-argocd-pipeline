@@ -47,7 +47,8 @@ echo "NAMESPACE set to $NAMESPACE"
 
 - Set an environment variable `ARGOCD_URL` using the `EXTERNAL-IP`
     ```bash
-    export ARGOCD_SERVER=$(oc get route argocd-server -n argocd -o jsonpath='{.spec.host}')
+    export ARGOCD_NAMESPACE="argocd"
+    export ARGOCD_SERVER=$(oc get route argocd-server -n $ARGOCD_NAMESPACE -o jsonpath='{.spec.host}')
     export ARGOCD_URL="https://$ARGOCD_SERVER"
     echo ARGOCD_URL=$ARGOCD_URL
     echo ARGOCD_SERVER=$ARGOCD_SERVER
@@ -58,14 +59,14 @@ echo "NAMESPACE set to $NAMESPACE"
     ```
 - Use `admin` as the username and get the password with the following command, it's the name of the pod for the argo-server
     ```bash
-    oc get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+    oc get pods -n $ARGOCD_NAMESPACE -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
     ```
     For example the output is similar to this:
     ```
     argocd-server-b54756f69-jncc9
     ```
     ```bash
-    export ARGOCD_PASSWORD=$(oc get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2)
+    export ARGOCD_PASSWORD=$(oc get pods -n $ARGOCD_NAMESPACE -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2)
     ```
 
 - Login into ArgoCD
