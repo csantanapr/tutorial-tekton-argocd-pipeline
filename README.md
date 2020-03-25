@@ -32,6 +32,7 @@ NAME                          DISPLAY                   VERSION   REPLACES      
 argocd-operator-helm.v0.0.3   Argo CD Operator (Helm)   0.0.3     argocd-operator-helm.v0.0.2   Succeeded 
 and wait for the "succeeded" to come up before proceeding.
 
+    ```bash
     oc apply -f operators/argocd-cr.yaml
     ```
 - [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
