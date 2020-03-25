@@ -25,7 +25,6 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```bash
     oc apply -f operators/argocd-operator.yaml
     ```
-    ```
     When installing the tutorial, make sure you wait until the argocd-operator is finished before installing the argocd-cr..or it will fail. You can do this:
 ```oc get ClusterServiceVersion/argocd-operator-helm.v0.0.3 -n argocd
 NAME                          DISPLAY                   VERSION   REPLACES                      PHASE
