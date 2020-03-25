@@ -218,11 +218,16 @@ Set the `GIT_REPO_NAME` to name of the Code Git repo like `tutorial-tekton-argoc
 export GIT_REPO_NAME='<GIT_REPO_NAME>'
 ```
 
+Set the `GIT_REPO_OWNER` to name of the Code Git repo like `csantanapr`
+```bash
+export GIT_REPO_OWNER='<GIT_REPO_NAME>'
+```
+
 Run curl to create the web hook
 ```bash
 curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
 -d "{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {\"url\": \"https://$GIT_WEBHOOK_URL\",\"content_type\": \"json\",\"insecure_ssl\": \"0\"}}" \
--L https://api.github.com/repos/$GIT_USERNAME/$GIT_REPO_NAME/hooks
+-L https://api.github.com/repos/$GIT_REPO_OWNER/$GIT_REPO_NAME/hooks
 ```
 
 Make a change on the Code repository, and verify that Github sent the WebHook to the event listener, and that the Pipeline runs in OpenShift Console
