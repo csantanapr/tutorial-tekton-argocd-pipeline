@@ -29,7 +29,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 ```bash
 oc get ClusterServiceVersion/argocd-operator-helm.v0.0.3 -n argocd
 NAME                          DISPLAY                   VERSION   REPLACES                      PHASE
-argocd-operator-helm.v0.0.3   Argo CD Operator (Helm)   0.0.3     argocd-operator-helm.v0.0.2   Succeeded ```
+argocd-operator-helm.v0.0.3   Argo CD Operator (Helm)   0.0.3     argocd-operator-helm.v0.0.2   Succeeded 
 and wait for the "succeeded" to come up before proceeding.
 
     oc apply -f operators/argocd-cr.yaml
