@@ -1,6 +1,6 @@
 # Tutorial for Tekton and ArgoCD Integration
 
-This tutorials shows the concept of seperation of concerns in DevOps.
+This tutorial shows the concept of seperation of concerns in DevOps.
 The project is setup in 3 repos (not all teams will have write access to all of them)
 - This git repo only contains the pipeline setup
   - https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
@@ -38,12 +38,14 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 - [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
 - [Install ArgoCD CLI](https://argoproj.github.io/argo-cd/cli_installation/) `argocd`
 
-## Git clone this repository
+## Setup Git repositories
 - Get a copy of the devops git repository and change directory
   ```bash
   git clone https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
   cd tutorial-tekton-argocd-pipeline
   ```
+- Create a new code git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-code/generate)
+- Create a new infra git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-infra/generate)
 
 ## Setup target Namespace
 - Create a new namespace/project
@@ -87,10 +89,12 @@ The project is setup in 3 repos (not all teams will have write access to all of 
   argocd login --username admin --password $ARGOCD_PASSWORD $ARGOCD_SERVER
   ```
 
-- Create the App
+- Create the App in ArgoCD using your own Infra git repository
+  ```bash
+  export GIT_REPOSITORY_URL="https://github.com/csantanapr/tutorial-tekton-argocd-infra"
+  ```
   ```bash
   export ARGOCD_APP=$(oc project -q)
-  export GIT_REPOSITORY_URL="https://github.com/csantanapr/tutorial-tekton-argocd-infra"
   export GIT_MANIFEST_DIR="yamls/ocp"
   ```
   ```bash
@@ -112,7 +116,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 ## Build Image with Tekton
 
 
-- Deploy the pipeline assets
+- Deploy the pipeline assets, edit the `pipelines/git.yaml` and use your own Code git repository
   ```bash
   oc apply -f pipeline/ -n $NAMESPACE
   ```
