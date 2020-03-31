@@ -24,7 +24,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 - Create a new infra git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-infra/generate)
 
 ## Setup Cluster
-
+- You need an OpenShift 4 cluster, you can use [CodeReadyContainers (CRC)](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers), [OpenShift PlayGround](https://learn.openshift.com/playgrounds/openshift42/), or OpenShift from a cloud provider like IBM Cloud
 - Install OpenShift Operators
   - Install OpenShift Pipeline Operator
     ```bash
