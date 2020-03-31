@@ -14,7 +14,16 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 
 ![overview-diagram](./images/tekton-argocd.png)
 
-## Prereqs
+## Setup Git repositories
+- Get a copy of the devops git repository and change directory
+  ```bash
+  git clone https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
+  cd tutorial-tekton-argocd-pipeline
+  ```
+- Create a new code git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-code/generate)
+- Create a new infra git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-infra/generate)
+
+## Setup Cluster
 
 - Install OpenShift Operators
   - Install OpenShift Pipeline Operator
@@ -35,17 +44,10 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```bash
     oc apply -f operators/argocd-cr.yaml
     ```
+
+## Setup CLIs
 - [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
 - [Install ArgoCD CLI](https://argoproj.github.io/argo-cd/cli_installation/) `argocd`
-
-## Setup Git repositories
-- Get a copy of the devops git repository and change directory
-  ```bash
-  git clone https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
-  cd tutorial-tekton-argocd-pipeline
-  ```
-- Create a new code git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-code/generate)
-- Create a new infra git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-infra/generate)
 
 ## Setup target Namespace
 - Create a new namespace/project
