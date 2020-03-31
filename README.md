@@ -232,7 +232,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 
 - Set the `GIT_REPO_OWNER` to name of the Code Git repo like `csantanapr`
   ```bash
-  export GIT_REPO_OWNER='<GIT_REPO_NAME>'
+  export GIT_REPO_OWNER='<GIT_REPO_OWNER>'
   ```
 
 - Run curl to create the web hook
