@@ -90,6 +90,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
   ```bash
   argocd login --username admin --password $ARGOCD_PASSWORD $ARGOCD_SERVER
   ```
+  Note: if you have problems with DNS using CRC, you might need to edit `/etc/hosts` and add entry for the `$ARGOCD_SERVER` with IP Address from `crc ip`
 
 - Create the App in ArgoCD using your own Infra git repository
   ```bash
@@ -118,7 +119,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 ## Build Image with Tekton
 
 
-- Deploy the pipeline assets, edit the `pipelines/git.yaml` and use your own Code git repository
+- Deploy the pipeline assets, edit the `pipelines/git.yaml` and `pipelines/pipeline-build-git.yaml` and use your own Code and Infra git repositories respectively.
   ```bash
   oc apply -f pipeline/ -n $NAMESPACE
   ```
