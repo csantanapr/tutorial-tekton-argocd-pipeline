@@ -10,3 +10,6 @@ spec:
         name: binding-cicd
       template:
         name: template-cicd
+      interceptors:
+        - cel:
+            filter: "header.match('X-GitHub-Event', 'push') && body.ref == 'refs/heads/master'"

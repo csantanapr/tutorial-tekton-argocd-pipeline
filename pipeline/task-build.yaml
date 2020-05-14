@@ -17,8 +17,6 @@ spec:
       - name: TLSVERIFY
         description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
         default: "false"
-      - name: TOOL_IMAGE
-        default: docker.io/csantanapr/helm-kubectl-curl-git-jq-yq
     resources:
       - name: source
         type: git
