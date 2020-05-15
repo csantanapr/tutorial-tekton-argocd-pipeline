@@ -36,14 +36,23 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```
     When installing the tutorial, make sure you wait until the argocd-operator is finished before installing the argocd-cr..or it will fail. You can do this:
     ```bash
-    oc get ClusterServiceVersion/argocd-operator-helm.v0.0.3 -n argocd
-    NAME                          DISPLAY                   VERSION   REPLACES                      PHASE
-    argocd-operator-helm.v0.0.3   Argo CD Operator (Helm)   0.0.3     argocd-operator-helm.v0.0.2   Succeeded
+    oc get ClusterServiceVersion -n argocd
+    NAME                                   DISPLAY                        VERSION   REPLACES   PHASE
+    argocd-operator.v0.0.8                 Argo CD                        0.0.8                Succeeded
     ```
     and wait for the "succeeded" to come up before proceeding.
     ```bash
     oc apply -f operators/argocd-cr.yaml
     ```
+    and waut for the argocd server Pod to be running
+    ```
+    oc get pods -n argocd -l app.kubernetes.io/name=example-argocd-server
+    ```
+    ```
+    NAME                                     READY   STATUS    RESTARTS   AGE
+    example-argocd-server-57c4fd5c45-zf4q6   1/1     Running   0          115s
+    ```
+
 
 ## Setup CLIs
 - [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
@@ -62,10 +71,10 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 
 ## Create ArgoCD Application
 
-- Set an environment variable `ARGOCD_URL` using the `EXTERNAL-IP`
+- Set an environment variable `ARGOCD_URL` using the route
     ```bash
     export ARGOCD_NAMESPACE="argocd"
-    export ARGOCD_SERVER=$(oc get route argocd-server -n $ARGOCD_NAMESPACE -o jsonpath='{.spec.host}')
+    export ARGOCD_SERVER=$(oc get route example-argocd-server -n $ARGOCD_NAMESPACE -o jsonpath='{.spec.host}')
     export ARGOCD_URL="https://$ARGOCD_SERVER"
     echo ARGOCD_URL=$ARGOCD_URL
     echo ARGOCD_SERVER=$ARGOCD_SERVER
@@ -74,16 +83,16 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```bash
     open $ARGOCD_URL
     ```
-- Use `admin` as the username and get the password with the following command, it's the name of the pod for the argo-server
+- Use `admin` as the username and get the password with the following command
     ```bash
-    oc get pods -n $ARGOCD_NAMESPACE -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+    oc get secret example-argocd-cluster -n $ARGOCD_NAMESPACE -o jsonpath='{.data.admin\.password}' | base64 -d
     ```
     For example the output is similar to this:
     ```
-    argocd-server-b54756f69-jncc9
+    tyafMb7BNvO0kP9eizx3CojrK8pYJFQq
     ```
     ```bash
-    export ARGOCD_PASSWORD=$(oc get pods -n $ARGOCD_NAMESPACE -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2)
+    export ARGOCD_PASSWORD=$(oc get secret example-argocd-cluster -n $ARGOCD_NAMESPACE -o jsonpath='{.data.admin\.password}' | base64 -d)
     ```
 
 - Login into ArgoCD
