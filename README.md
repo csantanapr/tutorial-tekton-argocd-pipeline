@@ -44,6 +44,15 @@ The project is setup in 3 repos (not all teams will have write access to all of 
     ```bash
     oc apply -f operators/argocd-cr.yaml
     ```
+    and waut for the argocd server Pod to be running
+    ```
+    oc get pods -n argocd -l app.kubernetes.io/name=example-argocd-server
+    ```
+    ```
+    NAME                                     READY   STATUS    RESTARTS   AGE
+    example-argocd-server-57c4fd5c45-zf4q6   1/1     Running   0          115s
+    ```
+
 
 ## Setup CLIs
 - [Install Tekton CLI](https://github.com/tektoncd/cli#installing-tkn) `tkn`
