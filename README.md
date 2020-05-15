@@ -3,11 +3,11 @@
 This tutorial shows the concept of seperation of concerns in DevOps.
 The project is setup in 3 repos (not all teams will have write access to all of them)
 - This git repo only contains the pipeline setup
-  - https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
+  - https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-pipeline
 - The git repo that contains only the application source code
-  - https://github.com/csantanapr/tutorial-tekton-argocd-code
+  - https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-code
 - The git repo that contains only the infrastructure manifests (yaml)
-  - https://github.com/csantanapr/tutorial-tekton-argocd-infra
+  - https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-infra
 
 - We will be using Tekton to build the container image, and update the Infra Git repo.
 - We will be using ArgoCD to deploy the application from the infra git repo
@@ -17,11 +17,11 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 ## Setup Git repositories
 - Get a copy of the devops git repository and change directory
   ```bash
-  git clone https://github.com/csantanapr/tutorial-tekton-argocd-pipeline
+  git clone https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-pipeline
   cd tutorial-tekton-argocd-pipeline
   ```
-- Create a new code git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-code/generate)
-- Create a new infra git repository using this repo as [template](https://github.com/csantanapr/tutorial-tekton-argocd-infra/generate)
+- Create a new code git repository using this repo as [template](https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-code/generate)
+- Create a new infra git repository using this repo as [template](https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-infra/generate)
 
 ## Setup Cluster
 - You need an OpenShift 4 cluster, you can use [CodeReadyContainers (CRC)](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers), [OpenShift PlayGround](https://learn.openshift.com/playgrounds/openshift42/), or OpenShift from a cloud provider like IBM Cloud
@@ -103,7 +103,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
 
 - Create the App in ArgoCD using your own Infra git repository
   ```bash
-  export GIT_REPOSITORY_URL="https://github.com/csantanapr/tutorial-tekton-argocd-infra"
+  export GIT_REPOSITORY_URL="https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-infra"
   ```
   ```bash
   export ARGOCD_APP=$(oc project -q)
@@ -138,7 +138,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
   ```
   ```
   NAME     TYPE    DETAILS
-  source   git     url: https://github.com/csantanapr/tutorial-tekton-argocd-code
+  source   git     url: https://github.com/ibm-cloud-architecture/tutorial-tekton-argocd-code
   image    image   url: image-registry.openshift-image-registry.svc:5000/$NAMESPACE/app
   ```
 
@@ -246,7 +246,7 @@ The project is setup in 3 repos (not all teams will have write access to all of 
   export GIT_REPO_NAME='<GIT_REPO_NAME>'
   ```
 
-- Set the `GIT_REPO_OWNER` to name of the Code Git repo like `csantanapr`
+- Set the `GIT_REPO_OWNER` to name of the Code Git repo like `ibm-cloud-architecture`
   ```bash
   export GIT_REPO_OWNER='<GIT_REPO_OWNER>'
   ```
